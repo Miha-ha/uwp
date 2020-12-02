@@ -10,7 +10,7 @@ import (
 )
 
 func TestCasePool(t *testing.T) {
-	p := NewPool(2).
+	p := New(2).
 		Run().
 		Add(func() error {
 			log.Println("Start 1 task")
@@ -53,7 +53,7 @@ func TestNewPool(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewPool(tt.args.concurency); !reflect.DeepEqual(got, tt.want) {
+			if got := New(tt.args.concurency); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewPool() = %v, want %v", got, tt.want)
 			}
 		})

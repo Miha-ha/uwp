@@ -15,7 +15,7 @@ type Pool struct {
 	err        error
 }
 
-func NewPool(concurency int) *Pool {
+func New(concurency int) *Pool {
 	return &Pool{
 		concurency: concurency,
 		tasksCh:    make(chan TaskFunc),
