@@ -11,7 +11,9 @@ type TaskFunc func() error
 type Pool struct {
 	concurency int
 	tasksCh    chan TaskFunc
+	wgMu       sync.Mutex
 	wg         sync.WaitGroup
+	errMu      sync.Mutex
 	err        error
 }
 
@@ -31,20 +33,26 @@ func (p *Pool) Run() *Pool {
 
 func (p *Pool) work() {
 	for task := range p.tasksCh {
-		p.wg.Add(1)
+
 		err := task()
 		if err != nil {
+			p.errMu.Lock()
 			if p.err == nil {
 				p.err = err
 			} else {
 				p.err = errors.Wrapf(p.err, "%v", err)
 			}
+			p.errMu.Unlock()
 		}
+
+		p.wgMu.Lock()
 		p.wg.Done()
+		p.wgMu.Unlock()
 	}
 }
 
 func (p *Pool) Add(fn TaskFunc) *Pool {
+	p.wg.Add(1)
 	p.tasksCh <- fn
 	return p
 }

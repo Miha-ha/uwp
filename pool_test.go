@@ -10,8 +10,12 @@ import (
 )
 
 func TestCasePool(t *testing.T) {
-	p := New(2).
-		Run().
+	p := New(2)
+	defer func() {
+		log.Println("error:", p.Wait().Close())
+	}()
+
+	p.Run().
 		Add(func() error {
 			log.Println("Start 1 task")
 			time.Sleep(time.Second)
@@ -34,10 +38,9 @@ func TestCasePool(t *testing.T) {
 			log.Println("Start 4 task")
 			time.Sleep(time.Second * 2)
 			log.Println("Finish 4 task")
-			return nil
+			return errors.New("four error")
 		})
 
-	log.Println("error:", p.Wait().Close())
 }
 
 func TestNewPool(t *testing.T) {
