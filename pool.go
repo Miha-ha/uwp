@@ -9,23 +9,23 @@ import (
 type TaskFunc func() error
 
 type Pool struct {
-	concurency int
-	tasksCh    chan TaskFunc
-	wgMu       sync.Mutex
-	wg         sync.WaitGroup
-	errMu      sync.Mutex
-	err        error
+	concurrency int
+	tasksCh     chan TaskFunc
+	wgMu        sync.Mutex
+	wg          sync.WaitGroup
+	errMu       sync.Mutex
+	err         error
 }
 
 func New(concurency int) *Pool {
 	return &Pool{
-		concurency: concurency,
-		tasksCh:    make(chan TaskFunc),
+		concurrency: concurency,
+		tasksCh:     make(chan TaskFunc),
 	}
 }
 
 func (p *Pool) Run() *Pool {
-	for i := 0; i < p.concurency; i++ {
+	for i := 0; i < p.concurrency; i++ {
 		go p.work()
 	}
 	return p
