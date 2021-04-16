@@ -62,6 +62,14 @@ func (p *Pool) Wait() *Pool {
 	return p
 }
 
+func (p *Pool) Error() error {
+	p.errMu.Lock()
+	defer p.errMu.Unlock()
+	err := p.err
+	p.err = nil
+	return err
+}
+
 func (p *Pool) Close() error {
 	close(p.tasksCh)
 	return p.err
